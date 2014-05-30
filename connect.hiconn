@@ -1,0 +1,10 @@
+{
+"_NAME" : "ranker",
+
+"_CPPFILES" : [ { "type" : "Glob", "mask" : "*.cpp" } ] ,
+
+"_LINKFLAGS" : [  ],
+
+"_DEPS" : []
+
+ }
