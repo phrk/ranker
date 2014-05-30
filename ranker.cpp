@@ -8,6 +8,7 @@ void Ranker::addDoc(uint64_t _id, const std::string &_title, const std::string &
 void Ranker::addDoc(uint64_t _id, const std::string &_title, const std::string &_text,
 			const std::vector<uint64_t> &_cats) {
 	Doc doc;
+	doc.categories.insert(0); // any category
 	for (int i = 0; i<_cats.size(); i++)
 		doc.categories.insert(_cats[i]);
 	
@@ -19,9 +20,9 @@ void Ranker::removeDoc(uint64_t _id) {
 	m_index.removeDoc(_id);
 }
 
-void Ranker::query(const std::string &_query, std::vector<uint64_t> &_result) {
+void Ranker::query(const std::string &_query, uint64_t _cat, std::vector<uint64_t> &_result) {
 	std::vector<uint64_t> query;
 	m_tokenizer.tokenizeText(_query, query);
 	if (query.size() != 0)
-		m_index.query(query, _result);
+		m_index.query(query, _cat, _result);
 }

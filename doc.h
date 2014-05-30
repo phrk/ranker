@@ -12,6 +12,8 @@ public:
 	std::vector<uint64_t> title;
 	std::vector<uint64_t> text;
 	std::set<uint64_t> categories;
+	
+	bool inCategory(uint64_t _cat);
 };
 
 #endif
