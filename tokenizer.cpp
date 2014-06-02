@@ -20,6 +20,8 @@ void Tokenizer::tokenizeText(const std::string &_text, std::vector<uint64_t> &_w
 //	std::cout << "tokenize text: " << _text << std::endl << "splited: ";
 	
 	std::set<uint32_t> delims;
+	delims.insert(0xE2); // '.'
+	delims.insert(0x2E); // '.'
 	delims.insert(0x20); // ' '
 	delims.insert(0x2C); // ','
 	delims.insert(0x3B); // ';'
