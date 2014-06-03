@@ -81,7 +81,7 @@ void Occurs::leaveOnlyCategory(uint64_t _cat, Occurs &_occ) {
 	std::vector<Occur>::iterator it = m_occurs.begin();
 	std::vector<Occur>::iterator end = m_occurs.end();
 	while (it != end) {
-		if ( m_docinCategory(it->docid, _cat) ) {
+		if (m_docinCategory(it->docid, _cat)) {
 			_occ.add(*it);
 		}
 	//		m_occurs.erase(it);
@@ -99,7 +99,6 @@ void InvertIndex::indexDoc(const Doc &_doc) {
 				it = m_index.find(_doc.text[i]);
 		}
 				
-		
 		it->second.add( occur );
 	}
 	m_docs[_doc.id] = _doc; 
@@ -145,5 +144,5 @@ void InvertIndex::query(const std::vector<uint64_t> &_query, uint64_t _cat, std:
 	}
 	
 	res.getDocIds(_result);
-	std::cout << "result size: " << _result.size() << std::endl;
+	std::cout << "result size: " << _result.size() << " category: " << _cat << std::endl;
 }
