@@ -33,20 +33,17 @@ void Occurs::intersect(const Occurs &_a, const Occurs &_b, Occurs &_res, uint64_
 	Occurs res(m_docinCategory);
 	while (1) {
 		
+		while (! m_docinCategory(_a.m_occurs[a_pos].docid, _cat) && a_pos < _a.m_occurs.size())
+			a_pos++;
+		
 		if (a_pos >= _a.m_occurs.size())
 			break;
+		
+		while (! m_docinCategory(_a.m_occurs[b_pos].docid, _cat) && b_pos < _b.m_occurs.size())
+			b_pos++;
+		
 		if (b_pos >= _b.m_occurs.size())
 			break;
-		
-		if (! m_docinCategory(_a.m_occurs[a_pos].docid, _cat) ) {
-			a_pos++;
-			continue;
-		}
-		
-		if (! m_docinCategory(_a.m_occurs[b_pos].docid, _cat) ) {
-			b_pos++;
-			continue;
-		}
 		
 		if ( _a.m_occurs[a_pos].docid == _b.m_occurs[b_pos].docid ) {
 			
@@ -56,7 +53,7 @@ void Occurs::intersect(const Occurs &_a, const Occurs &_b, Occurs &_res, uint64_
 		}
 		else if ( _a.m_occurs[a_pos].docid < _b.m_occurs[b_pos].docid)
 			a_pos++;
-		else
+		else // _a.m_occurs[a_pos].docid > _b.m_occurs[b_pos].docid
 			b_pos++;
 		
 	}
