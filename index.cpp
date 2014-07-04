@@ -5,7 +5,7 @@ Occur::Occur(uint64_t _docid):
 	
 }
 
-bool cmpOccur (Occur &_a, Occur &_b) {
+bool cmpOccur (const Occur &_a, const Occur &_b) {
 	return _a.docid < _b.docid;
 }
 
