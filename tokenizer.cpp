@@ -11,13 +11,7 @@ uint64_t Tokenizer::getTokenId(const std::string &_token) {
 	return newid;
 }
 
-void Tokenizer::tokenizeText(const std::string &_text, std::vector<uint64_t> &_words) {
-	
-	std::string text (_text);
-	toLowerUtf8(text);
-	fix_utf8_string(text);
-	
-//	std::cout << "tokenize text: " << _text << std::endl << "splited: ";
+void Tokenizer::splitByDelims(const std::string &_text, std::vector<std::string> &_words) {
 	
 	std::set<uint32_t> delims;
 	delims.insert(0xE2); // '.'
@@ -37,19 +31,48 @@ void Tokenizer::tokenizeText(const std::string &_text, std::vector<uint64_t> &_w
 	delims.insert(0x3E); // '>'
 	delims.insert(0x85); // '\n'
 	
+	splitUtf8(_text, delims, _words);
+}
+
+void Tokenizer::tokenizeText(const std::string &_text, std::vector<uint64_t> &_words) {
+	
+	std::string text (_text);
+	toLowerUtf8(text);
+	fix_utf8_string(text);
+	
+	
 	std::vector<std::string> words;
-	splitUtf8(text, delims, words);
+	splitByDelims(text, words);
+	
 	for (int i = 0; i<words.size(); i++)
 		if (words[i].size() != 0) {
 				_words.push_back(getTokenId(words[i]));
-				//std::cout << words[i] << " ";
 		}
-//	std::cout << std::endl;
 }
 
-void Tokenizer::tokenizeDoc(uint64_t _id, const std::string &_title, const std::string &_text, Doc &_doc) {
+void Tokenizer::tokenizeTextPrefixes(const std::string &_str_query, std::vector<uint64_t> &_query) {
 	
-	std::string title(_title);
+	std::string text (_str_query);
+	toLowerUtf8(text);
+	fix_utf8_string(text);
+	
+	std::vector<std::string> words;
+	splitByDelims(text, words);
+	
+	for (int i = 0; i<words.size(); i++)
+		if (words[i].size() != 0) {
+			
+			std::vector<std::string> prefixes;
+			getPrefixesUtf8(words[i], prefixes);
+			
+			for (int j = 0; j<prefixes.size(); j++)
+				_query.push_back(getTokenId(prefixes[j]));
+		}
+}
+
+void Tokenizer::tokenizeDoc(uint64_t _id, const std::string &_text, Doc &_doc) {
+	
+	//std::string title(_title);
 	std::string text(_text);
 		
 	tokenizeText(text, _doc.text);

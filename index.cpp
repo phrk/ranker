@@ -9,8 +9,8 @@ bool cmpOccur (const Occur &_a, const Occur &_b) {
 	return _a.docid < _b.docid;
 }
 
-Occurs::Occurs(boost::function<bool(uint64_t, uint64_t)> _docinCategory):
-	m_docinCategory(_docinCategory)
+Occurs::Occurs()
+	//:m_docinCategory(_docinCategory)
 {
 }
 
@@ -24,24 +24,25 @@ void Occurs::getDocIds(std::vector<uint64_t> &_docids) {
 		_docids.push_back(m_occurs[i].docid);
 }
 
-void Occurs::intersect(const Occurs &_a, const Occurs &_b, Occurs &_res, uint64_t _cat) {
+void Occurs::intersect(const Occurs &_a, const Occurs &_b, Occurs &_res) {
 //	std::cout << "Occurs::intersect " << _a.m_occurs.size()
 //		 << " " <<  _b.m_occurs.size() << std::endl;
 	
 	int a_pos = 0;
 	int b_pos = 0;
-	Occurs res(m_docinCategory);
+	Occurs res;
 	while (1) {
 		
+		/*
 		while (! m_docinCategory(_a.m_occurs[a_pos].docid, _cat) && a_pos < _a.m_occurs.size())
 			a_pos++;
-		
+		*/
 		if (a_pos >= _a.m_occurs.size())
 			break;
-		
+		/*
 		while (! m_docinCategory(_a.m_occurs[b_pos].docid, _cat) && b_pos < _b.m_occurs.size())
 			b_pos++;
-		
+		*/
 		if (b_pos >= _b.m_occurs.size())
 			break;
 		
@@ -73,7 +74,7 @@ void Occurs::removeOccurance(uint64_t _docid) {
 		it++;
 	}	
 }
-
+/*
 void Occurs::leaveOnlyCategory(uint64_t _cat, Occurs &_occ) {
 	std::vector<Occur>::iterator it = m_occurs.begin();
 	std::vector<Occur>::iterator end = m_occurs.end();
@@ -85,14 +86,14 @@ void Occurs::leaveOnlyCategory(uint64_t _cat, Occurs &_occ) {
 		it++;
 	}
 }
-
+*/
 void InvertIndex::indexDoc(const Doc &_doc) {
 	for (int i = 0; i<_doc.text.size(); i++) {
 		Occur occur(_doc.id);
 		hiaux::hashtable<uint64_t, Occurs>::iterator it = m_index.find(_doc.text[i]);
 		if (it == m_index.end()) {
 			m_index.insert(std::pair<uint64_t, Occurs> (_doc.text[i], 
-				Occurs(boost::bind(&InvertIndex::docinCategory, this, _1, _2))) );
+				Occurs()) );
 				it = m_index.find(_doc.text[i]);
 		}
 				
@@ -122,24 +123,24 @@ void InvertIndex::removeDoc(uint64_t _id) {
 	}
 }
 
-void InvertIndex::query(const std::vector<uint64_t> &_query, uint64_t _cat, std::vector<uint64_t> &_result) {
+void InvertIndex::query(const std::vector<uint64_t> &_query, //uint64_t _cat,
+						std::vector<uint64_t> &_result) {
 	
 	hiaux::hashtable<uint64_t, Occurs>::iterator it = m_index.find(_query[0]);
 	if (it == m_index.end())
 		return;
 	
-	Occurs res0 = it->second;
-	Occurs res(boost::bind(&InvertIndex::docinCategory, this, _1, _2));
-	res0.leaveOnlyCategory(_cat, res);
+	Occurs res = it->second;
+	//res0.leaveOnlyCategory(_cat, res);
 	
 	for (int i = 1; i<_query.size(); i++) {
 		it = m_index.find(_query[i]);
 		if (it == m_index.end())
 			continue;
 		
-		res.intersect (res, it->second, res, _cat);
+		res.intersect (res, it->second, res);
 	}
 	
 	res.getDocIds(_result);
-	std::cout << "result size: " << _result.size() << " category: " << _cat << std::endl;
+	//std::cout << "result size: " << _result.size() << " category: " << _cat << std::endl;
 }

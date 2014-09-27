@@ -23,18 +23,18 @@ public:
 class Occurs {
 	std::vector<Occur> m_occurs;
 	
-	boost::function<bool(uint64_t, uint64_t)> m_docinCategory;
+	//boost::function<bool(uint64_t, uint64_t)> m_docinCategory;
 	
 public:
 	
+	Occurs();
 	//Occurs();
-	Occurs(boost::function<bool(uint64_t, uint64_t)> _docinCategory);
 	
 	void add(Occur &_occur);
 	void getDocIds(std::vector<uint64_t> &_docids);
-	void intersect(const Occurs &_a, const Occurs &_b, Occurs &_res, uint64_t _cat);
+	void intersect(const Occurs &_a, const Occurs &_b, Occurs &_res);
 	void removeOccurance(uint64_t _docid);
-	void leaveOnlyCategory(uint64_t _cat, Occurs &_occ);
+//	void leaveOnlyCategory(uint64_t _cat, Occurs &_occ);
 };
 
 class InvertIndex {
@@ -47,7 +47,8 @@ public:
 	bool docinCategory(uint64_t _docid, uint64_t _catid);
 	void indexDoc(const Doc &_doc);	
 	void removeDoc(uint64_t _id);
-	void query(const std::vector<uint64_t> &_query, uint64_t _cat, std::vector<uint64_t> &_result);
+	void query(const std::vector<uint64_t> &_query, //uint64_t _cat,
+		 		std::vector<uint64_t> &_result);
 };
 
 #endif

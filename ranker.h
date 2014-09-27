@@ -12,13 +12,14 @@ class Ranker {
 	
 public:
 	
-	void addDoc(uint64_t _id, const std::string &_title, const std::string &_text);
-	void addDoc(uint64_t _id, const std::string &_title, const std::string &_text,
-				const std::vector<uint64_t> &_cats);
+	void addDoc(uint64_t _id, const std::string &_text);
+	//void addDoc(uint64_t _id, const std::string &_title, const std::string &_text,
+	//			const std::vector<uint64_t> &_cats);
 	
 	void removeDoc(uint64_t _id);
 	
-	void query(const std::string &_query, uint64_t _cat, std::vector<uint64_t> &_result);
+	void query(const std::string &_query, //uint64_t _cat,
+										std::vector<uint64_t> &_result);
 };
 
 typedef boost::shared_ptr<Ranker> RankerPtr;
