@@ -87,23 +87,23 @@ void Occurs::leaveOnlyCategory(uint64_t _cat, Occurs &_occ) {
 	}
 }
 */
-void InvertIndex::indexDoc(const Doc &_doc) {
-	for (int i = 0; i<_doc.text.size(); i++) {
-		Occur occur(_doc.id);
-		hiaux::hashtable<uint64_t, Occurs>::iterator it = m_index.find(_doc.text[i]);
+void InvertIndex::indexDoc(Doc *_doc) {
+	for (int i = 0; i<_doc->text.size(); i++) {
+		Occur occur(_doc->id);
+		hiaux::hashtable<uint64_t, Occurs>::iterator it = m_index.find(_doc->text[i]);
 		if (it == m_index.end()) {
-			m_index.insert(std::pair<uint64_t, Occurs> (_doc.text[i], 
+			m_index.insert(std::pair<uint64_t, Occurs> (_doc->text[i], 
 				Occurs()) );
-				it = m_index.find(_doc.text[i]);
+				it = m_index.find(_doc->text[i]);
 		}
 				
 		it->second.add( occur );
 	}
-	m_docs[_doc.id] = _doc; 
+	m_docs[_doc->id] = _doc;
 }
 
 bool InvertIndex::docinCategory(uint64_t _docid, uint64_t _catid) {
-	return m_docs[_docid].inCategory(_catid);
+	return m_docs[_docid]->inCategory(_catid);
 }
 
 void InvertIndex::removeOccurance(uint64_t _word, uint64_t _docid) {
@@ -113,20 +113,22 @@ void InvertIndex::removeOccurance(uint64_t _word, uint64_t _docid) {
 }
 
 void InvertIndex::removeDoc(uint64_t _id) {
-	hiaux::hashtable<uint64_t, Doc>::iterator it = m_docs.find(_id);
+	hiaux::hashtable<uint64_t, Doc*>::iterator it = m_docs.find(_id);
 	if (it != m_docs.end()) {
-		for (int i = 0; i<it->second.title.size(); i++)
-			removeOccurance(it->second.title[i], _id);
+		//for (int i = 0; i<it->second.title.size(); i++)
+		//	removeOccurance(it->second.title[i], _id);
 		
-		for (int i = 0; i<it->second.text.size(); i++)
-			removeOccurance(it->second.text[i], _id);
+		for (int i = 0; i<it->second->text.size(); i++)
+			removeOccurance(it->second->text[i], _id);
+		delete it->second;
+		m_docs.erase(it);
 	}
 }
 
 void InvertIndex::query(const std::vector<uint64_t> &_query, //uint64_t _cat,
-						std::vector<uint64_t> &_result) {
+						std::vector<uint64_t> &_result) const {
 	
-	hiaux::hashtable<uint64_t, Occurs>::iterator it = m_index.find(_query[0]);
+	hiaux::hashtable<uint64_t, Occurs>::const_iterator it = m_index.find(_query[0]);
 	if (it == m_index.end())
 		return;
 	

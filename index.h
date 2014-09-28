@@ -39,16 +39,16 @@ public:
 
 class InvertIndex {
 	hiaux::hashtable<uint64_t, Occurs> m_index;
-	hiaux::hashtable<uint64_t, Doc> m_docs;
+	hiaux::hashtable<uint64_t, Doc*> m_docs;
 	
 	void removeOccurance(uint64_t _word, uint64_t _docid);
 public:
 	
 	bool docinCategory(uint64_t _docid, uint64_t _catid);
-	void indexDoc(const Doc &_doc);	
+	void indexDoc(Doc *_doc);	
 	void removeDoc(uint64_t _id);
 	void query(const std::vector<uint64_t> &_query, //uint64_t _cat,
-		 		std::vector<uint64_t> &_result);
+		 		std::vector<uint64_t> &_result) const;
 };
 
 #endif
