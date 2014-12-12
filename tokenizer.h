@@ -19,9 +19,7 @@ public:
 	uint64_t getTokenIdConst(const std::string &_token) const;
 //	void tokenizeDoc(uint64_t _id, const std::string &_text, Doc &_doc);
 	void tokenizeText(const std::string &_str_query, std::vector<uint64_t> &_query);
-	
 	void tokenizeTextConst(const std::string &_str_query, std::vector<uint64_t> &_query) const;
-	
 	void tokenizeTextPrefixes(const std::string &_str_query, std::vector<uint64_t> &_query);
 };
 
