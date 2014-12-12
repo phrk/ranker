@@ -4,6 +4,7 @@
 #include "hiconfig.h"
 
 #include <vector>
+#include <math.h>
 
 class Occur {
 public:
