@@ -8,21 +8,28 @@
 
 #include <boost/shared_ptr.hpp>
 
+typedef uint64_t ObjId;
+typedef std::vector<uint64_t> TextRepr;
+
+template <class CatT, class ObjT>
 class Doc {
 public:
-	uint64_t id;
-	std::vector<uint64_t> title;
-	std::vector<uint64_t> text;
-	std::set<uint64_t> categories;
+	ObjId id;
+	ObjT obj;
+	TextRepr title;
+	TextRepr text;
+	std::set<CatT> categories;
 	
-	
-	Doc();
-	Doc(uint64_t _id, const std::vector<uint64_t> &_title, const std::vector<uint64_t> &_text, const std::set<uint64_t> &_categories);
+	//Doc();
+	Doc(ObjId _id, ObjT _obj, const TextRepr &_title, const TextRepr &_text, const std::set<CatT> &_categories);
 	virtual ~Doc();
 	
-	bool inCategory(uint64_t _cat);
+	bool inCategory(CatT _cat);
 };
 
-typedef boost::shared_ptr<Doc> DocPtr;
+#include "doc.impl"
+
+//template <class CatT, class ObjT>
+//typedef boost::shared_ptr< Doc<CatT,ObjT> > DocPtr<CatT,ObjT>;
 
 #endif

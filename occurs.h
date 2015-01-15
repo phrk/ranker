@@ -7,13 +7,15 @@
 #include <math.h>
 #include <algorithm>
 
+#include "doc.h"
+
 class Occur {
 public:
-	uint64_t docid;
+	ObjId docid;
 	uint64_t tf; // term frequency
 	bool in_title;
 	
-	Occur(uint64_t docid);
+	Occur(ObjId docid);
 };
 
 class Occurs {
@@ -24,12 +26,14 @@ class Occurs {
 public:
 	
 	Occurs();
+	virtual ~Occurs();
 	//Occurs();
 	
 	void add(Occur &_occur);
-	void getDocIds(std::vector<uint64_t> &_docids);
+	void getDocIds(std::vector<ObjId> &_docids);
+	
 	void intersect(const Occurs &_a, const Occurs &_b, Occurs &_res);
-	void removeOccurance(uint64_t _docid);
+	void removeOccurance(ObjId _docid);
 //	void leaveOnlyCategory(uint64_t _cat, Occurs &_occ);
 };
 

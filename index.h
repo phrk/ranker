@@ -16,22 +16,30 @@
 
 #include "occurs.h"
 
+template <class CatT = uint64_t, class ObjT = uint64_t>
 class InvertIndex : public boost::noncopyable {
 	
-	hiaux::hashtable<uint64_t, Occurs> m_index;
-	hiaux::hashtable<uint64_t, DocPtr> m_docs;
+	typedef boost::shared_ptr<Doc <CatT, ObjT> > DocPtr;
+	typedef hiaux::hashtable<uint64_t, DocPtr> DocsHash;
+	typedef hiaux::hashtable<uint64_t, Occurs> OccursHash;
 	
-	void removeOccurance(uint64_t _word, uint64_t _docid);
+	OccursHash m_index;
+	DocsHash m_docs;
+	
+	void removeOccurance(uint64_t _word, ObjId _docid);
 public:
 	
-	bool docinCategory(uint64_t _docid, uint64_t _catid);
-	void indexDoc(const Doc &_doc);	
-	void removeDoc(uint64_t _id);
-	void query(const std::vector<uint64_t> &_query, //uint64_t _cat,
-		 		std::vector<uint64_t> &_result) const;
+	virtual ~InvertIndex();
 	
-	void query(const std::vector<uint64_t> &_query, uint64_t _cat,
-		 		std::vector<uint64_t> &_result) const;			
+	int getDocsCount();
+	bool docinCategory(ObjId _docid, CatT _catid);
+	void indexDoc(const Doc<CatT, ObjT> &_doc);	
+	void removeDoc(ObjId _id);
+	void query(const TextRepr &_query, std::vector<ObjT> &_result) const;
+	
+	void query(const TextRepr &_query, CatT _cat, std::vector<ObjT> &_result) const;			
 };
+
+#include "index.impl"
 
 #endif

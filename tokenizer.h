@@ -9,6 +9,7 @@
 #include <iostream>
 #include "doc.h"
 
+
 class Tokenizer {
 	hiaux::hashtable<std::string, uint64_t> m_tokens;
 	void textToIds(const std::string &_text, std::vector<uint32_t> &_words);
@@ -18,9 +19,11 @@ public:
 	uint64_t getTokenId(const std::string &_token);
 	uint64_t getTokenIdConst(const std::string &_token) const;
 //	void tokenizeDoc(uint64_t _id, const std::string &_text, Doc &_doc);
-	void tokenizeText(const std::string &_str_query, std::vector<uint64_t> &_query);
-	void tokenizeTextConst(const std::string &_str_query, std::vector<uint64_t> &_query) const;
-	void tokenizeTextPrefixes(const std::string &_str_query, std::vector<uint64_t> &_query);
+	void tokenizeText(const std::string &_str_query, TextRepr &_text);
+	void tokenizeTextConst(const std::string &_str_query, TextRepr &_text) const;
+	void tokenizeTextPrefixes(const std::string &_str_query, TextRepr &_text);
+	
+	virtual ~Tokenizer();
 };
 
 #endif

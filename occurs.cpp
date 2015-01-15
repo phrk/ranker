@@ -1,7 +1,11 @@
 #include "occurs.h"
 
-Occur::Occur(uint64_t _docid):
+Occur::Occur(ObjId _docid):
 	docid (_docid) {
+	
+}
+
+Occurs::~Occurs() {
 	
 }
 
@@ -33,7 +37,7 @@ void Occurs::add(Occur &_occur) {
 		m_occurs.push_back(_occur);*/
 }
 
-void Occurs::getDocIds(std::vector<uint64_t> &_docids) {
+void Occurs::getDocIds(std::vector<ObjId> &_docids) {
 
 	for (int i = 0; i<m_occurs.size(); i++)
 		_docids.push_back( m_occurs[i].docid );
@@ -108,7 +112,7 @@ void Occurs::intersect(const Occurs &_a, const Occurs &_b, Occurs &_res) {
 	_res = res;
 }
 
-void Occurs::removeOccurance(uint64_t _docid) {
+void Occurs::removeOccurance(ObjId _docid) {
 	
 	
 	std::vector<Occur>::iterator it = m_occurs.begin();

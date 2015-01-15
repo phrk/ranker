@@ -8,26 +8,30 @@
 
 #include <boost/noncopyable.hpp>
 
+template <class CatT = uint64_t, class ObjT = uint64_t>
 class Ranker : public boost::noncopyable {
 	
-	InvertIndex m_index;
+	InvertIndex<CatT, ObjT> m_index;
 	Tokenizer m_tokenizer;
+	
+	void addDoc(const Doc<CatT,ObjT> &_doc);
 	
 public:
 	
 	Ranker();
 	virtual ~Ranker();
 	
-	void addDoc(const Doc &_doc);
-	void addDoc(uint64_t _id, const std::string &_title, const std::string &_text, const std::set<uint64_t> &_categories);
-	void addDoc(uint64_t _id, const std::string &_title, const std::string &_text);
+	ObjId addDoc(ObjT _obj, const std::string &_title, const std::string &_text, const std::set<CatT> &_categories);
+	ObjId addDoc(ObjT _obj, const std::string &_title, const std::string &_text);
 
-	void removeDoc(uint64_t _id);
+	void removeDoc(ObjId _id);
 	
-	void query(const std::string &_query, std::vector<uint64_t> &_result) const;
-	void query(const std::string &_query, uint64_t _cat, std::vector<uint64_t> &_result) const;
+	void query(const std::string &_query, std::vector<ObjT> &_result) const;
+	void query(const std::string &_query, CatT _cat, std::vector<ObjT> &_result) const;
 };
 
-typedef boost::shared_ptr<Ranker> RankerPtr;
+#include "ranker.impl"
+
+//typedef boost::shared_ptr<Ranker> RankerPtr;
 
 #endif

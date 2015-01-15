@@ -1,0 +1,26 @@
+//#include "doc.h"
+/*
+template <class CatT, class ObjT>
+Doc<CatT,ObjT>::Doc() {
+	
+}*/
+
+template <class CatT, class ObjT>
+Doc<CatT,ObjT>::Doc(ObjId _id, ObjT _obj, const TextRepr &_title, const TextRepr &_text, const std::set<CatT> &_categories) {
+	
+	id = _id;
+	obj = _obj;
+	title = _title;
+	text = _text;
+	categories = _categories;
+}
+
+template <class CatT, class ObjT>
+Doc<CatT,ObjT>::~Doc() {
+	
+}
+
+template <class CatT, class ObjT>
+bool Doc<CatT,ObjT>::inCategory(CatT _cat) {
+	return categories.find(_cat) != categories.end();
+}

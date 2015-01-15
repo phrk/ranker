@@ -1,5 +1,9 @@
 #include "tokenizer.h"
 
+Tokenizer::~Tokenizer() {
+	
+}
+
 uint64_t Tokenizer::getTokenId(const std::string &_token) {
 	hiaux::hashtable<std::string, uint64_t>::iterator it = m_tokens.find(_token);
 	if (it != m_tokens.end())
@@ -42,7 +46,7 @@ void Tokenizer::splitByDelims(const std::string &_text, std::vector<std::string>
 	splitUtf8(_text, delims, _words);
 }
 
-void Tokenizer::tokenizeText(const std::string &_text, std::vector<uint64_t> &_words) {
+void Tokenizer::tokenizeText(const std::string &_text, TextRepr &_words) {
 	
 	std::string text (_text);
 	toLowerUtf8(text);
@@ -58,7 +62,7 @@ void Tokenizer::tokenizeText(const std::string &_text, std::vector<uint64_t> &_w
 		}
 }
 
-void Tokenizer::tokenizeTextConst(const std::string &_text, std::vector<uint64_t> &_words) const {
+void Tokenizer::tokenizeTextConst(const std::string &_text, TextRepr &_words) const {
 	
 	
 	std::string text (_text);
@@ -77,7 +81,7 @@ void Tokenizer::tokenizeTextConst(const std::string &_text, std::vector<uint64_t
 	
 }
 
-void Tokenizer::tokenizeTextPrefixes(const std::string &_str_query, std::vector<uint64_t> &_query) {
+void Tokenizer::tokenizeTextPrefixes(const std::string &_str_query, TextRepr &_text) {
 	
 	std::string text (_str_query);
 	toLowerUtf8(text);
@@ -93,7 +97,7 @@ void Tokenizer::tokenizeTextPrefixes(const std::string &_str_query, std::vector<
 			getPrefixesUtf8(words[i], prefixes);
 			
 			for (int j = 0; j<prefixes.size(); j++)
-				_query.push_back(getTokenId(prefixes[j]));
+				_text.push_back(getTokenId(prefixes[j]));
 		}
 }
 /*
