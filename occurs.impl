@@ -1,26 +1,31 @@
 #include "occurs.h"
 
-Occur::Occur(ObjId _docid):
+template <class ObjId>
+Occur<ObjId>::Occur(ObjId _docid):
 	docid (_docid) {
 	
 }
 
-Occurs::~Occurs() {
+template <class ObjId>
+Occurs<ObjId>::~Occurs() {
 	
 }
 
-bool cmpOccur (const Occur &_a, const Occur &_b) {
+template <class ObjId>
+bool cmpOccur (const Occur<ObjId> &_a, const Occur<ObjId> &_b) {
 	return _a.docid < _b.docid;
 }
 
-Occurs::Occurs()
+template <class ObjId>
+Occurs<ObjId>::Occurs()
 	//:m_docinCategory(_docinCategory)
 {
 }
 
-void Occurs::add(Occur &_occur) {
+template <class ObjId>
+void Occurs<ObjId>::add(Occur<ObjId> &_occur) {
 	m_occurs.push_back(_occur);
-	std::sort(m_occurs.begin(), m_occurs.end(), cmpOccur);
+	std::sort(m_occurs.begin(), m_occurs.end(), cmpOccur<ObjId>);
 	
 	/*
 	std::list<Occur>::iterator it = m_occurs.begin();
@@ -37,7 +42,8 @@ void Occurs::add(Occur &_occur) {
 		m_occurs.push_back(_occur);*/
 }
 
-void Occurs::getDocIds(std::vector<ObjId> &_docids) {
+template <class ObjId>
+void Occurs<ObjId>::getDocIds(std::vector<ObjId> &_docids) {
 
 	for (int i = 0; i<m_occurs.size(); i++)
 		_docids.push_back( m_occurs[i].docid );
@@ -51,13 +57,14 @@ void Occurs::getDocIds(std::vector<ObjId> &_docids) {
 	}*/
 }
 
-void Occurs::intersect(const Occurs &_a, const Occurs &_b, Occurs &_res) {
+template <class ObjId>
+void Occurs<ObjId>::intersect(const Occurs<ObjId> &_a, const Occurs<ObjId> &_b, Occurs<ObjId> &_res) {
 //	std::cout << "Occurs::intersect " << _a.m_occurs.size()
 //		 << " " <<  _b.m_occurs.size() << std::endl;
 	
 	int a_pos = 0;
 	int b_pos = 0;
-	Occurs res;
+	Occurs<ObjId> res;
 /*	
 	std::list<Occur>::const_iterator it_a = _a.m_occurs.begin();
 	std::list<Occur>::const_iterator end_a = _a.m_occurs.end();
@@ -112,11 +119,12 @@ void Occurs::intersect(const Occurs &_a, const Occurs &_b, Occurs &_res) {
 	_res = res;
 }
 
-void Occurs::removeOccurance(ObjId _docid) {
+template <class ObjId>
+void Occurs<ObjId>::removeOccurance(ObjId _docid) {
 	
 	
-	std::vector<Occur>::iterator it = m_occurs.begin();
-	std::vector<Occur>::iterator end = m_occurs.end();
+	typename OccursVec::iterator it = m_occurs.begin();
+	typename OccursVec::iterator end = m_occurs.end();
 	
 	while (it != end) {
 		if (it->docid == _docid) {

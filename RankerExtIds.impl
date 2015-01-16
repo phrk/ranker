@@ -1,0 +1,40 @@
+
+template <class CatT, class ObjId>
+RankerExtIds<CatT, ObjId>::RankerExtIds() {
+	
+}
+
+template <class CatT, class ObjId>
+RankerExtIds<CatT, ObjId>::~RankerExtIds() {
+	
+}
+
+template <class CatT, class ObjId>
+void RankerExtIds<CatT, ObjId>::addDoc(ObjId _obj, const std::string &_title, const std::string &_text, const std::set<CatT> &_categories) {
+	
+	Ranker<CatT, ObjId, ObjId>::addDocAsId(_obj, _title, _text, _categories);
+}
+
+template <class CatT, class ObjId>
+void RankerExtIds<CatT, ObjId>::addDoc(ObjId _obj, const std::string &_title, const std::string &_text) {
+	
+	Ranker<CatT, ObjId, ObjId>::addDocAsId(_obj, _title, _text);
+}
+
+template <class CatT, class ObjId>
+void RankerExtIds<CatT, ObjId>::removeDoc(ObjId _id) {
+	
+	Ranker<CatT, ObjId, ObjId>::removeDoc(_id);
+}
+
+template <class CatT, class ObjId>
+void RankerExtIds<CatT, ObjId>::query(const std::string &_query, std::vector<ObjId> &_result) const {
+	
+	Ranker<CatT, ObjId, ObjId>::query(_query, _result);
+}
+
+template <class CatT, class ObjId>
+void RankerExtIds<CatT, ObjId>::query(const std::string &_query, CatT _cat, std::vector<ObjId> &_result) const {
+	
+	Ranker<CatT, ObjId, ObjId>::query(_query, _cat, _result);
+}

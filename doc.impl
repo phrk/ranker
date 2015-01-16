@@ -5,8 +5,8 @@ Doc<CatT,ObjT>::Doc() {
 	
 }*/
 
-template <class CatT, class ObjT>
-Doc<CatT,ObjT>::Doc(ObjId _id, ObjT _obj, const TextRepr &_title, const TextRepr &_text, const std::set<CatT> &_categories) {
+template <class CatT, class ObjId, class ObjT>
+Doc<CatT, ObjId, ObjT>::Doc(ObjId _id, ObjT _obj, const TextRepr &_title, const TextRepr &_text, const std::set<CatT> &_categories) {
 	
 	id = _id;
 	obj = _obj;
@@ -15,12 +15,12 @@ Doc<CatT,ObjT>::Doc(ObjId _id, ObjT _obj, const TextRepr &_title, const TextRepr
 	categories = _categories;
 }
 
-template <class CatT, class ObjT>
-Doc<CatT,ObjT>::~Doc() {
+template <class CatT, class ObjId, class ObjT>
+Doc<CatT, ObjId, ObjT>::~Doc() {
 	
 }
 
-template <class CatT, class ObjT>
-bool Doc<CatT,ObjT>::inCategory(CatT _cat) {
+template <class CatT, class ObjId, class ObjT>
+bool Doc<CatT, ObjId, ObjT>::inCategory(CatT _cat) {
 	return categories.find(_cat) != categories.end();
 }

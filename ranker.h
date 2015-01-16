@@ -8,14 +8,21 @@
 
 #include <boost/noncopyable.hpp>
 
-template <class CatT = uint64_t, class ObjT = uint64_t>
+#include <type_traits>
+
+template <class CatT, class ObjId, class ObjT>
 class Ranker : public boost::noncopyable {
 	
-	InvertIndex<CatT, ObjT> m_index;
+	InvertIndex<CatT, ObjId, ObjT> m_index;
 	Tokenizer m_tokenizer;
+
+protected:
 	
-	void addDoc(const Doc<CatT,ObjT> &_doc);
-	
+	void addDoc(const Doc<CatT, ObjId, ObjT> &_doc);
+
+	void addDocAsId(ObjId _obj, const std::string &_title, const std::string &_text, const std::set<CatT> &_categories);
+	void addDocAsId(ObjId _obj, const std::string &_title, const std::string &_text);
+
 public:
 	
 	Ranker();
@@ -23,7 +30,7 @@ public:
 	
 	ObjId addDoc(ObjT _obj, const std::string &_title, const std::string &_text, const std::set<CatT> &_categories);
 	ObjId addDoc(ObjT _obj, const std::string &_title, const std::string &_text);
-
+	
 	void removeDoc(ObjId _id);
 	
 	void query(const std::string &_query, std::vector<ObjT> &_result) const;
@@ -31,7 +38,5 @@ public:
 };
 
 #include "ranker.impl"
-
-//typedef boost::shared_ptr<Ranker> RankerPtr;
 
 #endif

@@ -8,10 +8,10 @@
 
 #include <boost/shared_ptr.hpp>
 
-typedef uint64_t ObjId;
+//typedef uint64_t ObjId;
 typedef std::vector<uint64_t> TextRepr;
 
-template <class CatT, class ObjT>
+template <class CatT, class ObjId, class ObjT>
 class Doc {
 public:
 	ObjId id;

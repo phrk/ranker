@@ -9,6 +9,7 @@
 
 #include "doc.h"
 
+template <class ObjId>
 class Occur {
 public:
 	ObjId docid;
@@ -18,8 +19,11 @@ public:
 	Occur(ObjId docid);
 };
 
+template <class ObjId>
 class Occurs {
-	std::vector<Occur> m_occurs;
+	
+	typedef std::vector<Occur<ObjId> >  OccursVec;
+	OccursVec m_occurs;
 	//std::list<Occur> m_occurs;
 	//boost::function<bool(uint64_t, uint64_t)> m_docinCategory;
 	
@@ -29,12 +33,14 @@ public:
 	virtual ~Occurs();
 	//Occurs();
 	
-	void add(Occur &_occur);
+	void add(Occur<ObjId> &_occur);
 	void getDocIds(std::vector<ObjId> &_docids);
 	
-	void intersect(const Occurs &_a, const Occurs &_b, Occurs &_res);
+	void intersect(const Occurs<ObjId> &_a, const Occurs<ObjId> &_b, Occurs<ObjId> &_res);
 	void removeOccurance(ObjId _docid);
 //	void leaveOnlyCategory(uint64_t _cat, Occurs &_occ);
 };
+
+#include "occurs.impl"
 
 #endif

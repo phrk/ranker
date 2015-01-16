@@ -16,12 +16,12 @@
 
 #include "occurs.h"
 
-template <class CatT = uint64_t, class ObjT = uint64_t>
+template <class CatT, class ObjId, class ObjT>
 class InvertIndex : public boost::noncopyable {
 	
-	typedef boost::shared_ptr<Doc <CatT, ObjT> > DocPtr;
+	typedef boost::shared_ptr<Doc <CatT, ObjId, ObjT> > DocPtr;
 	typedef hiaux::hashtable<uint64_t, DocPtr> DocsHash;
-	typedef hiaux::hashtable<uint64_t, Occurs> OccursHash;
+	typedef hiaux::hashtable<uint64_t, Occurs<ObjId> > OccursHash;
 	
 	OccursHash m_index;
 	DocsHash m_docs;
@@ -33,7 +33,7 @@ public:
 	
 	int getDocsCount();
 	bool docinCategory(ObjId _docid, CatT _catid);
-	void indexDoc(const Doc<CatT, ObjT> &_doc);	
+	void indexDoc(const Doc<CatT, ObjId, ObjT> &_doc);	
 	void removeDoc(ObjId _id);
 	void query(const TextRepr &_query, std::vector<ObjT> &_result) const;
 	

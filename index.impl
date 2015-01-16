@@ -14,51 +14,50 @@ void Occurs::leaveOnlyCategory(uint64_t _cat, Occurs &_occ) {
 }
 */
 
-template <class CatT, class ObjT>
-InvertIndex<CatT, ObjT>::~InvertIndex() {
+template <class CatT, class ObjId, class ObjT>
+InvertIndex<CatT, ObjId, ObjT>::~InvertIndex() {
 	
 }
 
-template <class CatT, class ObjT>
-int InvertIndex<CatT, ObjT>::getDocsCount() {
+template <class CatT, class ObjId, class ObjT>
+int InvertIndex<CatT, ObjId, ObjT>::getDocsCount() {
 	
 	return m_docs.size();;
 }
 
-template <class CatT, class ObjT>
-void InvertIndex<CatT, ObjT>::indexDoc(const Doc<CatT, ObjT> &_doc) {
+template <class CatT, class ObjId, class ObjT>
+void InvertIndex<CatT, ObjId, ObjT>::indexDoc(const Doc<CatT, ObjId, ObjT> &_doc) {
 	
-	DocPtr doc (new Doc<CatT, ObjT>(_doc));
+	DocPtr doc (new Doc<CatT, ObjId, ObjT>(_doc));
 	
 	for (int i = 0; i<doc->text.size(); i++) {
-		Occur occur(doc->id);
-		OccursHash::iterator it = m_index.find(doc->text[i]);
+		Occur<ObjId> occur(doc->id);
+		typename OccursHash::iterator it = m_index.find(doc->text[i]);
 		if (it == m_index.end()) {
-			m_index.insert(std::make_pair(doc->text[i], Occurs()));
+			m_index.insert(std::make_pair(doc->text[i], Occurs<ObjId>()));
 				it = m_index.find(doc->text[i]);
-		}
-				
+		}		
 		it->second.add( occur );
 	}
 	m_docs[doc->id] = doc;
 }
 
-template <class CatT, class ObjT>
-bool InvertIndex<CatT, ObjT>::docinCategory(ObjId _docid, CatT _catid) {
+template <class CatT, class ObjId, class ObjT>
+bool InvertIndex<CatT, ObjId, ObjT>::docinCategory(ObjId _docid, CatT _catid) {
 	
 	return m_docs[_docid]->inCategory(_catid);
 }
 
-template <class CatT, class ObjT>
-void InvertIndex<CatT, ObjT>::removeOccurance(uint64_t _word, ObjId _docid) {
+template <class CatT, class ObjId, class ObjT>
+void InvertIndex<CatT, ObjId, ObjT>::removeOccurance(uint64_t _word, ObjId _docid) {
 	
-	OccursHash::iterator it = m_index.find(_word);
+	typename OccursHash::iterator it = m_index.find(_word);
 	if (it != m_index.end())
 		it->second.removeOccurance(_docid);
 }
 
-template <class CatT, class ObjT>
-void InvertIndex<CatT, ObjT>::removeDoc(ObjId _id) {
+template <class CatT, class ObjId, class ObjT>
+void InvertIndex<CatT, ObjId, ObjT>::removeDoc(ObjId _id) {
 	
 	//typedef boost::shared_ptr<Doc <CatT, ObjT> > DocPtr;
 	
@@ -74,15 +73,14 @@ void InvertIndex<CatT, ObjT>::removeDoc(ObjId _id) {
 	}
 }
 
-template <class CatT, class ObjT>
-void InvertIndex<CatT, ObjT>::query(const TextRepr &_query, //uint64_t _cat,
-						std::vector<ObjT> &_result) const {
+template <class CatT, class ObjId, class ObjT>
+void InvertIndex<CatT, ObjId, ObjT>::query(const TextRepr &_query, std::vector<ObjT> &_result) const {
 	
-	hiaux::hashtable<uint64_t, Occurs>::const_iterator it = m_index.find(_query[0]);
+	typename OccursHash::const_iterator it = m_index.find(_query[0]);
 	if (it == m_index.end())
 		return;
 	
-	Occurs res = it->second;
+	Occurs<ObjId> res = it->second;
 	//res0.leaveOnlyCategory(_cat, res);
 	
 	for (int i = 1; i<_query.size(); i++) {
@@ -96,8 +94,8 @@ void InvertIndex<CatT, ObjT>::query(const TextRepr &_query, //uint64_t _cat,
 	std::vector<ObjId> obj_ids;
 	res.getDocIds(obj_ids);
 	
-	typename DocsHash::iterator dit;
-	typename DocsHash::iterator dend = m_docs.end();
+	typename DocsHash::const_iterator dit;
+	typename DocsHash::const_iterator dend = m_docs.end();
 	
 	for (int i = 0; i<obj_ids.size(); i++) {
 		
@@ -108,9 +106,8 @@ void InvertIndex<CatT, ObjT>::query(const TextRepr &_query, //uint64_t _cat,
 	//std::cout << "result size: " << _result.size() << " category: " << _cat << std::endl;
 }
 
-template <class CatT, class ObjT>
-void InvertIndex<CatT, ObjT>::query(const TextRepr &_query, CatT _cat,
-	 		std::vector<ObjT> &_result) const {
+template <class CatT, class ObjId, class ObjT>
+void InvertIndex<CatT, ObjId, ObjT>::query(const TextRepr &_query, CatT _cat, std::vector<ObjT> &_result) const {
 	 
 	throw "not implemented";
 }
