@@ -108,6 +108,19 @@ void InvertIndex<CatT, ObjId, ObjT>::query(const TextRepr &_query, std::vector<O
 
 template <class CatT, class ObjId, class ObjT>
 void InvertIndex<CatT, ObjId, ObjT>::query(const TextRepr &_query, CatT _cat, std::vector<ObjT> &_result) const {
-	 
-	throw "not implemented";
+	
+	std::vector<ObjT> raw_result;
+	query(_query, raw_result);
+	
+	for (int i = 0; i<raw_result.size(); i++) {
+		
+		auto it = m_docs.find(raw_result[i]);
+		if (it == m_docs.end()) {
+			std::cout << "InvertIndex::query doc not found: " << raw_result[i] << std::endl;
+			continue;
+		}
+		
+		if (it->second->inCategory(_cat))
+			_result.push_back(raw_result[i]);
+	}
 }
