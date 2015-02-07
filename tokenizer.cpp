@@ -1,5 +1,10 @@
 #include "tokenizer.h"
 
+Tokenizer::Tokenizer(bool _by_pref):
+m_by_pref(_by_pref) {
+	
+}
+
 Tokenizer::~Tokenizer() {
 	
 }
@@ -47,6 +52,11 @@ void Tokenizer::splitByDelims(const std::string &_text, std::vector<std::string>
 }
 
 void Tokenizer::tokenizeText(const std::string &_text, TextRepr &_words) {
+	
+	if (m_by_pref) {
+		tokenizeTextPrefixes(_text, _words);
+		return;
+	}
 	
 	std::string text (_text);
 	toLowerUtf8(text);

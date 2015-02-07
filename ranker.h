@@ -25,7 +25,7 @@ protected:
 
 public:
 	
-	Ranker();
+	Ranker(bool _by_pref);
 	virtual ~Ranker();
 	
 	ObjId addDoc(ObjT _obj, const std::string &_title, const std::string &_text, const std::set<CatT> &_categories);

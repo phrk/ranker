@@ -8,7 +8,7 @@ class RankerExtIds : protected Ranker<CatT, ObjId, ObjId> {
 
 public:
 	
-	RankerExtIds();
+	RankerExtIds(bool _by_pref);
 	virtual ~RankerExtIds();
 	
 	void addDoc(ObjId _obj, const std::string &_title, const std::string &_text, const std::set<CatT> &_categories);

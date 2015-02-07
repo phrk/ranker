@@ -36,7 +36,6 @@ public:
 	void indexDoc(const Doc<CatT, ObjId, ObjT> &_doc);	
 	void removeDoc(ObjId _id);
 	void query(const TextRepr &_query, std::vector<ObjT> &_result) const;
-	
 	void query(const TextRepr &_query, CatT _cat, std::vector<ObjT> &_result) const;			
 };
 

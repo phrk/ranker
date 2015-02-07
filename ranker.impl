@@ -6,7 +6,8 @@
 //}
 
 template <class CatT, class ObjId, class ObjT>
-Ranker<CatT, ObjId, ObjT>::Ranker() {
+Ranker<CatT, ObjId, ObjT>::Ranker(bool _by_pref):
+m_tokenizer(_by_pref) {
 	
 }
 

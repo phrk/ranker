@@ -1,6 +1,8 @@
 
 template <class CatT, class ObjId>
-RankerExtIds<CatT, ObjId>::RankerExtIds() {
+RankerExtIds<CatT, ObjId>::RankerExtIds(bool _by_pref):
+Ranker<CatT, ObjId, ObjId>(_by_pref)
+ {
 	
 }
 

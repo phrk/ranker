@@ -15,12 +15,18 @@ class Tokenizer {
 	void textToIds(const std::string &_text, std::vector<uint32_t> &_words);
 	
 	void splitByDelims(const std::string &_text, std::vector<std::string> &_words) const;
+	
+	bool m_by_pref;
 public:
+	
+	Tokenizer(bool _by_pref);
+	
 	uint64_t getTokenId(const std::string &_token);
 	uint64_t getTokenIdConst(const std::string &_token) const;
 //	void tokenizeDoc(uint64_t _id, const std::string &_text, Doc &_doc);
 	void tokenizeText(const std::string &_str_query, TextRepr &_text);
 	void tokenizeTextConst(const std::string &_str_query, TextRepr &_text) const;
+	
 	void tokenizeTextPrefixes(const std::string &_str_query, TextRepr &_text);
 	
 	virtual ~Tokenizer();

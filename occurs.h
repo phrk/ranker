@@ -9,12 +9,16 @@
 
 #include "doc.h"
 
+typedef int PosInDoc;
+typedef int DocFieldId;
+
 template <class ObjId>
 class Occur {
 public:
 	ObjId docid;
-	uint64_t tf; // term frequency
-	bool in_title;
+	PosInDoc pos;
+	DocFieldId field;
+	//bool in_title;
 	
 	Occur(ObjId docid);
 };

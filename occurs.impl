@@ -24,9 +24,15 @@ Occurs<ObjId>::Occurs()
 
 template <class ObjId>
 void Occurs<ObjId>::add(Occur<ObjId> &_occur) {
+
+#warning Leaving only one occurance in doc
+	for (int i = 0; i<m_occurs.size(); i++)
+		if (m_occurs[i].docid == _occur.docid)
+			return;
+
 	m_occurs.push_back(_occur);
 	std::sort(m_occurs.begin(), m_occurs.end(), cmpOccur<ObjId>);
-	
+
 	/*
 	std::list<Occur>::iterator it = m_occurs.begin();
 	std::list<Occur>::iterator end = m_occurs.end();
@@ -100,6 +106,8 @@ void Occurs<ObjId>::intersect(const Occurs<ObjId> &_a, const Occurs<ObjId> &_b, 
 		//if (it_a->docid == it_b->docid) {
 		if ( _a.m_occurs[a_pos].docid == _b.m_occurs[b_pos].docid ) {
 			
+			//if (res.m_occurs.size() != 0)
+			//	if ( res.m_occurs[res.m_occurs.size()-1].docid !=  _a.m_occurs[a_pos].docid)
 			res.m_occurs.push_back(  _a.m_occurs[a_pos] );
 			//res.m_occurs.push_back(*it_a);
 			a_pos++;
@@ -121,7 +129,6 @@ void Occurs<ObjId>::intersect(const Occurs<ObjId> &_a, const Occurs<ObjId> &_b, 
 
 template <class ObjId>
 void Occurs<ObjId>::removeOccurance(ObjId _docid) {
-	
 	
 	typename OccursVec::iterator it = m_occurs.begin();
 	typename OccursVec::iterator end = m_occurs.end();
