@@ -1,5 +1,5 @@
-#ifndef _DOC_H_
-#define _DOC_H_
+#ifndef _DOC2_H_
+#define _DOC2_H_
 
 #include "hiconfig.h"
 #include <string>
@@ -8,28 +8,30 @@
 
 #include <boost/shared_ptr.hpp>
 
-//typedef uint64_t ObjId;
-typedef std::vector<uint64_t> TextRepr;
+#include "ranker_defs.h"
 
-template <class CatT, class ObjId, class ObjT>
+namespace rnk2 {
+
+template <class CatT, class ObjId>
 class Doc {
 public:
 	ObjId id;
-	ObjT obj;
 	TextRepr title;
 	TextRepr text;
 	std::set<CatT> categories;
 	
-	//Doc();
-	Doc(ObjId _id, ObjT _obj, const TextRepr &_title, const TextRepr &_text, const std::set<CatT> &_categories);
+	hashtable<TokenIdT, RnkReal> m_tfs;
+	
+	Doc(ObjId _id, const TextRepr &_title, const TextRepr &_text, const std::set<CatT> &_categories);
 	virtual ~Doc();
 	
 	bool inCategory(CatT _cat);
+	RnkReal getTf(TokenIdT _token);
+	int size() const;
 };
 
 #include "doc.impl"
 
-//template <class CatT, class ObjT>
-//typedef boost::shared_ptr< Doc<CatT,ObjT> > DocPtr<CatT,ObjT>;
+}
 
 #endif

@@ -1,5 +1,5 @@
 {
-"_NAME" : "ranker",
+"_NAME" : "ranker2",
 
 "_CPPFILES" : [ { "type" : "Glob", "mask" : "*.cpp" } ] ,
 

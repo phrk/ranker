@@ -1,34 +1,22 @@
-//#include "index.h"
 
-/*
-void Occurs::leaveOnlyCategory(uint64_t _cat, Occurs &_occ) {
-	std::vector<Occur>::iterator it = m_occurs.begin();
-	std::vector<Occur>::iterator end = m_occurs.end();
-	while (it != end) {
-		if (m_docinCategory(it->docid, _cat)) {
-			_occ.add(*it);
-		}
-	//		m_occurs.erase(it);
-		it++;
-	}
-}
-*/
-
-template <class CatT, class ObjId, class ObjT>
-InvertIndex<CatT, ObjId, ObjT>::~InvertIndex() {
+template <class CatT, class ObjId>
+InvertIndex<CatT, ObjId>::~InvertIndex() {
 	
 }
 
-template <class CatT, class ObjId, class ObjT>
-int InvertIndex<CatT, ObjId, ObjT>::getDocsCount() {
+template <class CatT, class ObjId>
+int InvertIndex<CatT, ObjId>::getDocsCount() const {
 	
 	return m_docs.size();;
 }
 
-template <class CatT, class ObjId, class ObjT>
-void InvertIndex<CatT, ObjId, ObjT>::indexDoc(const Doc<CatT, ObjId, ObjT> &_doc) {
+template <class CatT, class ObjId>
+void InvertIndex<CatT, ObjId>::indexDoc(const Doc<CatT, ObjId> &_doc) {
 	
-	DocPtr doc (new Doc<CatT, ObjId, ObjT>(_doc));
+	DocPtr doc (new Doc<CatT, ObjId>(_doc));
+	
+	m_avg_docl_acc(doc->text.size());
+	
 	
 	for (int i = 0; i<doc->text.size(); i++) {
 		Occur<ObjId> occur(doc->id);
@@ -42,29 +30,25 @@ void InvertIndex<CatT, ObjId, ObjT>::indexDoc(const Doc<CatT, ObjId, ObjT> &_doc
 	m_docs[doc->id] = doc;
 }
 
-template <class CatT, class ObjId, class ObjT>
-bool InvertIndex<CatT, ObjId, ObjT>::docinCategory(ObjId _docid, CatT _catid) {
+template <class CatT, class ObjId>
+bool InvertIndex<CatT, ObjId>::docinCategory(ObjId _docid, CatT _catid) {
 	
 	return m_docs[_docid]->inCategory(_catid);
 }
 
-template <class CatT, class ObjId, class ObjT>
-void InvertIndex<CatT, ObjId, ObjT>::removeOccurance(uint64_t _word, ObjId _docid) {
+template <class CatT, class ObjId>
+void InvertIndex<CatT, ObjId>::removeOccurance(TokenIdT _word, ObjId _docid) {
 	
 	typename OccursHash::iterator it = m_index.find(_word);
 	if (it != m_index.end())
 		it->second.removeOccurance(_docid);
 }
 
-template <class CatT, class ObjId, class ObjT>
-void InvertIndex<CatT, ObjId, ObjT>::removeDoc(ObjId _id) {
-	
-	//typedef boost::shared_ptr<Doc <CatT, ObjT> > DocPtr;
-	
+template <class CatT, class ObjId>
+void InvertIndex<CatT, ObjId>::removeDoc(ObjId _id) {
+		
 	typename DocsHash::iterator it = m_docs.find(_id);
 	if (it != m_docs.end()) {
-		//for (int i = 0; i<it->second.title.size(); i++)
-		//	removeOccurance(it->second.title[i], _id);
 		
 		for (int i = 0; i<it->second->text.size(); i++)
 			removeOccurance(it->second->text[i], _id);
@@ -73,54 +57,98 @@ void InvertIndex<CatT, ObjId, ObjT>::removeDoc(ObjId _id) {
 	}
 }
 
-template <class CatT, class ObjId, class ObjT>
-void InvertIndex<CatT, ObjId, ObjT>::query(const TextRepr &_query, std::vector<ObjT> &_result) const {
+template <class CatT, class ObjId>
+RnkReal InvertIndex<CatT, ObjId>::calcBM25(DocPtr _doc, const Query &_query) const {
 	
-	typename OccursHash::const_iterator it = m_index.find(_query[0]);
-	if (it == m_index.end())
-		return;
+	if (_query.idfs.size() != _query.text.size())
+		throw RnkEx("InvertIndex<CatT, ObjId>::calcBM25: _query_idfs.size() != _query.size()");
 	
-	Occurs<ObjId> res = it->second;
-	//res0.leaveOnlyCategory(_cat, res);
+	RnkReal k = 2.0f;
+	RnkReal b = 0.75f;
+	RnkReal ret = 0.0f;
+	RnkReal avg_docl = 10.0f;//boost::accumulators::mean(m_avg_docl_acc);
+#warning "fix average doc length"
 	
-	for (int i = 1; i<_query.size(); i++) {
-		it = m_index.find(_query[i]);
+	for (int i = 0; i<_query.text.size(); i++) {
+		ret += _query.idfs[i] * ( _doc->getTf( _query.text[i] ) * (k + 1) ) / (_doc->getTf( _query.text[i] ) + k * (1 - b + b * _doc->size() / avg_docl));
+	}
+		
+	return ret;
+}
+
+template <class CatT, class ObjId>
+void InvertIndex<CatT, ObjId>::buildQuery(const TextRepr &_query_tokens, Query &_query) const {
+	
+	for (int i = 0; i<_query_tokens.size(); i++) {
+		
+		auto it = m_index.find(_query_tokens[i]);
 		if (it == m_index.end())
 			continue;
 		
-		res.intersect (res, it->second, res);
-	}
-	
-	std::vector<ObjId> obj_ids;
-	res.getDocIds(obj_ids);
-	
-	typename DocsHash::const_iterator dit;
-	typename DocsHash::const_iterator dend = m_docs.end();
-	
-	for (int i = 0; i<obj_ids.size(); i++) {
-		
-		dit = m_docs.find(obj_ids[i]);
-		if (dit != dend)
-			_result.push_back(dit->second->obj);
-	}
-	//std::cout << "result size: " << _result.size() << " category: " << _cat << std::endl;
+		_query.text.push_back(_query_tokens[i]);
+		RnkReal noccurs = RnkReal(it->second.size());
+		_query.idfs.push_back( log( (RnkReal(getDocsCount()) - noccurs + 0.5f) / (noccurs + 0.5f) ) );
+	}	
 }
 
-template <class CatT, class ObjId, class ObjT>
-void InvertIndex<CatT, ObjId, ObjT>::query(const TextRepr &_query, CatT _cat, std::vector<ObjT> &_result) const {
+template <class ObjId>
+bool docsWeigthsComapre(const std::pair<ObjId, RnkReal> &_a, const std::pair<ObjId, RnkReal> &_b) {
 	
-	std::vector<ObjT> raw_result;
-	query(_query, raw_result);
-	
-	for (int i = 0; i<raw_result.size(); i++) {
+	return _a.second > _b.second;
+}
+
+template <class CatT, class ObjId>
+void InvertIndex<CatT, ObjId>::query(const TextRepr &_query_tokens, std::vector<ObjId> &_result, bool _category_set, CatT _cat) const {
 		
-		auto it = m_docs.find(raw_result[i]);
-		if (it == m_docs.end()) {
-			std::cout << "InvertIndex::query doc not found: " << raw_result[i] << std::endl;
+	Occurs<ObjId> res;
+	Query query;
+	
+	buildQuery(_query_tokens, query);
+	
+	if (query.size() == 0)
+		return;
+	
+	for (int i = 0; i<query.text.size(); i++) {
+	
+		auto it = m_index.find(query.text[i]);
+		if (it == m_index.end())
 			continue;
-		}
-		
-		if (it->second->inCategory(_cat))
-			_result.push_back(raw_result[i]);
+	
+		if (i != 0)
+			res.intersect (res, it->second, res);
+		else
+			res = it->second;
 	}
+	
+	res.getDocIds(_result);
+	
+	DocsWeights weights;
+	for (int i = 0; i < _result.size(); i++) {
+		
+		auto it = m_docs.find(_result[i]);
+		if (it == m_docs.end())
+			throw RnkEx("InvertIndex<CatT, ObjId>::query unknown docid in index");
+		
+		if (_category_set && ! it->second->inCategory(_cat))
+			continue;
+		
+		weights.push_back( std::make_pair( _result[i], calcBM25(it->second, query) ) );
+	}
+	
+	std::sort(weights.begin(), weights.end(), docsWeigthsComapre<ObjId>);
+	_result.clear();
+	for (int i = 0; i<weights.size(); i++)
+		_result.push_back(weights[i].first);
+}
+
+template <class CatT, class ObjId>
+void InvertIndex<CatT, ObjId>::query(const TextRepr &_query, std::vector<ObjId> &_result) const {
+	
+	query(_query, _result, false, CatT());
+}
+
+template <class CatT, class ObjId>
+void InvertIndex<CatT, ObjId>::query(const TextRepr &_query, CatT _cat, std::vector<ObjId> &_result) const {
+	
+	query(_query, _result, true, _cat);
 }

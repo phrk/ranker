@@ -1,18 +1,21 @@
-#ifndef _TOKENIZER_H_
-#define _TOKENIZER_H_
+#ifndef _TOKENIZER2_H_
+#define _TOKENIZER2_H_
 
 #include "hiconfig.h"
 #include "hiaux/structs/hashtable.h"
 #include "hiaux/strings/string_utils.h"
+#include <boost/algorithm/string.hpp>
 #include <vector>
 #include <string>
 #include <iostream>
 #include "doc.h"
 
+namespace rnk2 {
 
+template<class TokenIdT>
 class Tokenizer {
-	hiaux::hashtable<std::string, uint64_t> m_tokens;
-	void textToIds(const std::string &_text, std::vector<uint32_t> &_words);
+	hashtable<std::string, TokenIdT> m_tokens;
+	void textToIds(const std::string &_text, std::vector<TokenIdT> &_words);
 	
 	void splitByDelims(const std::string &_text, std::vector<std::string> &_words) const;
 	
@@ -21,9 +24,9 @@ public:
 	
 	Tokenizer(bool _by_pref);
 	
-	uint64_t getTokenId(const std::string &_token);
-	uint64_t getTokenIdConst(const std::string &_token) const;
-//	void tokenizeDoc(uint64_t _id, const std::string &_text, Doc &_doc);
+	TokenIdT getTokenId(const std::string &_token);
+	TokenIdT getTokenIdConst(const std::string &_token) const;
+
 	void tokenizeText(const std::string &_str_query, TextRepr &_text);
 	void tokenizeTextConst(const std::string &_str_query, TextRepr &_text) const;
 	
@@ -31,5 +34,9 @@ public:
 	
 	virtual ~Tokenizer();
 };
+
+#include "tokenizer.impl"
+
+}
 
 #endif

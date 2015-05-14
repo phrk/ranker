@@ -1,26 +1,40 @@
-//#include "doc.h"
-/*
-template <class CatT, class ObjT>
-Doc<CatT,ObjT>::Doc() {
-	
-}*/
 
-template <class CatT, class ObjId, class ObjT>
-Doc<CatT, ObjId, ObjT>::Doc(ObjId _id, ObjT _obj, const TextRepr &_title, const TextRepr &_text, const std::set<CatT> &_categories) {
+template <class CatT, class ObjId>
+Doc<CatT, ObjId>::Doc(ObjId _id, const TextRepr &_title, const TextRepr &_text, const std::set<CatT> &_categories) {
 	
 	id = _id;
-	obj = _obj;
 	title = _title;
 	text = _text;
 	categories = _categories;
+	
+	for (int i = 0; i<text.size(); i++)
+		m_tfs[ text[i] ] += 1.0f;
+	
+	for (int i = 0; i<title.size(); i++)
+		m_tfs[ title[i] ] += 1.0f;
 }
 
-template <class CatT, class ObjId, class ObjT>
-Doc<CatT, ObjId, ObjT>::~Doc() {
+template <class CatT, class ObjId>
+Doc<CatT, ObjId>::~Doc() {
 	
 }
 
-template <class CatT, class ObjId, class ObjT>
-bool Doc<CatT, ObjId, ObjT>::inCategory(CatT _cat) {
+template <class CatT, class ObjId>
+bool Doc<CatT, ObjId>::inCategory(CatT _cat) {
 	return categories.find(_cat) != categories.end();
+}
+
+template <class CatT, class ObjId>
+RnkReal Doc<CatT, ObjId>::getTf(TokenIdT _token) {
+	
+	auto it = m_tfs.find(_token);
+	if (it == m_tfs.end())
+		return 0;
+	return it->second;
+}
+
+template <class CatT, class ObjId>
+int Doc<CatT, ObjId>::size() const {
+	
+	return text.size() + title.size();
 }
