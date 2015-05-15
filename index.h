@@ -17,6 +17,7 @@
 
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/mean.hpp>
+#include <boost/accumulators/statistics/stats.hpp>
 
 #include <math.h>
 
@@ -40,9 +41,7 @@ class InvertIndex : public boost::noncopyable {
 	void removeOccurance(TokenIdT _word, ObjId _docid);
 	
 	RnkReal calcBM25(DocPtr _doc, const Query &_query) const;
-	
 	void buildQuery(const TextRepr &_query_tokens, Query &_query) const;
-	
 	void query(const TextRepr &_query_tokens, std::vector<ObjId> &_result, bool _category_set, CatT _cat) const;
 	
 public:
@@ -53,8 +52,8 @@ public:
 	bool docinCategory(ObjId _docid, CatT _catid);
 	void indexDoc(const Doc<CatT, ObjId> &_doc);	
 	void removeDoc(ObjId _id);
-	void query(const TextRepr &_query, std::vector<ObjId> &_result) const;
-	void query(const TextRepr &_query, CatT _cat, std::vector<ObjId> &_result) const;			
+	void query(const TextRepr &_query_tokens, std::vector<ObjId> &_result) const;
+	void query(const TextRepr &_query_tokens, CatT _cat, std::vector<ObjId> &_result) const;			
 };
 
 #include "index.impl"

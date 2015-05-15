@@ -7,7 +7,7 @@ InvertIndex<CatT, ObjId>::~InvertIndex() {
 template <class CatT, class ObjId>
 int InvertIndex<CatT, ObjId>::getDocsCount() const {
 	
-	return m_docs.size();;
+	return m_docs.size();
 }
 
 template <class CatT, class ObjId>
@@ -66,8 +66,8 @@ RnkReal InvertIndex<CatT, ObjId>::calcBM25(DocPtr _doc, const Query &_query) con
 	RnkReal k = 2.0f;
 	RnkReal b = 0.75f;
 	RnkReal ret = 0.0f;
-	RnkReal avg_docl = 10.0f;//boost::accumulators::mean(m_avg_docl_acc);
-#warning "fix average doc length"
+	
+	RnkReal avg_docl = boost::accumulators::mean(m_avg_docl_acc);
 	
 	for (int i = 0; i<_query.text.size(); i++) {
 		ret += _query.idfs[i] * ( _doc->getTf( _query.text[i] ) * (k + 1) ) / (_doc->getTf( _query.text[i] ) + k * (1 - b + b * _doc->size() / avg_docl));
@@ -89,12 +89,6 @@ void InvertIndex<CatT, ObjId>::buildQuery(const TextRepr &_query_tokens, Query &
 		RnkReal noccurs = RnkReal(it->second.size());
 		_query.idfs.push_back( log( (RnkReal(getDocsCount()) - noccurs + 0.5f) / (noccurs + 0.5f) ) );
 	}	
-}
-
-template <class ObjId>
-bool docsWeigthsComapre(const std::pair<ObjId, RnkReal> &_a, const std::pair<ObjId, RnkReal> &_b) {
-	
-	return _a.second > _b.second;
 }
 
 template <class CatT, class ObjId>
@@ -135,7 +129,11 @@ void InvertIndex<CatT, ObjId>::query(const TextRepr &_query_tokens, std::vector<
 		weights.push_back( std::make_pair( _result[i], calcBM25(it->second, query) ) );
 	}
 	
-	std::sort(weights.begin(), weights.end(), docsWeigthsComapre<ObjId>);
+	std::sort(weights.begin(), weights.end(),
+		[](const std::pair<ObjId, RnkReal> &_a, const std::pair<ObjId, RnkReal> &_b) {
+			return _a.second > _b.second;
+		});
+		
 	_result.clear();
 	for (int i = 0; i<weights.size(); i++)
 		_result.push_back(weights[i].first);
