@@ -13,6 +13,8 @@ typedef std::vector<TokenIdT> TextRepr;
 
 typedef float RnkReal;
 
+typedef float GeoCoord;
+
 template <class K, class V>
 class hashtable : public hiaux::hashtable<K,V> {
 public:

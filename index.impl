@@ -31,7 +31,7 @@ void InvertIndex<CatT, ObjId>::indexDoc(const Doc<CatT, ObjId> &_doc) {
 }
 
 template <class CatT, class ObjId>
-bool InvertIndex<CatT, ObjId>::docinCategory(ObjId _docid, CatT _catid) {
+bool InvertIndex<CatT, ObjId>::docinCategory(ObjId _docid, CatT _catid) const {
 	
 	return m_docs[_docid]->inCategory(_catid);
 }

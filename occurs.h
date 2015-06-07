@@ -37,9 +37,9 @@ public:
 	
 	int size() const;
 	void add(Occur<ObjId> &_occur);
-	void getDocIds(std::vector<ObjId> &_docids);
+	void getDocIds(std::vector<ObjId> &_docids) const;
 	
-	void intersect(const Occurs<ObjId> &_a, const Occurs<ObjId> &_b, Occurs<ObjId> &_res);
+	void intersect(const Occurs<ObjId> &_a, const Occurs<ObjId> &_b, Occurs<ObjId> &_res) const;
 	void removeOccurance(ObjId _docid);
 };
 

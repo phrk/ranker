@@ -25,8 +25,8 @@ public:
 	Doc(ObjId _id, const TextRepr &_title, const TextRepr &_text, const std::set<CatT> &_categories);
 	virtual ~Doc();
 	
-	bool inCategory(CatT _cat);
-	RnkReal getTf(TokenIdT _token);
+	bool inCategory(CatT _cat) const;
+	RnkReal getTf(TokenIdT _token) const;
 	int size() const;
 };
 

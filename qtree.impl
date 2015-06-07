@@ -1,0 +1,112 @@
+
+template<class V>	
+QTree<V>::QTree(int _node_limit, const AABB &_bound):
+m_node_limit(_node_limit),
+m_bound(_bound),
+m_size(0),
+m_isleaf(true) {
+	
+}
+
+template<class V>
+QTree<V>::~QTree() {
+	
+}
+
+template<class V>
+void QTree<V>::insert(const std::pair<Point, V> &_p) {
+	
+	if (m_isleaf) {
+	
+		m_points.push_back(_p);
+		m_size++;
+		if (m_points.size() >= m_node_limit)
+			subdivide();
+		return;
+	}
+	
+	if (m_tl->isInside(_p.first)) {
+		
+		m_tl->insert(_p);
+	
+	} else if (m_tr->isInside(_p.first)) {
+		
+		m_tr->insert(_p);
+	
+	} else if (m_bl->isInside(_p.first)) {
+		
+		m_bl->insert(_p);
+		
+	} else if (m_br->isInside(_p.first)) {
+		
+		m_br->insert(_p);
+	}
+	
+}
+
+template<class V>
+void QTree<V>::subdivide() {
+	
+	AABB tl;
+	AABB tr;
+	AABB bl;
+	AABB br;
+	m_bound.splitToFour(tl, tr, bl, br);
+	
+	m_tl.reset(new QTree(m_node_limit, tl));
+	m_tr.reset(new QTree(m_node_limit, tr));
+	m_bl.reset(new QTree(m_node_limit, bl));
+	m_br.reset(new QTree(m_node_limit, br));
+	
+	m_isleaf = false;
+	
+	for (auto it : m_points) {
+		
+		if (tl.isInside(*it)) {
+			
+			m_tl->insert(*it);
+		
+		} else if (tr.isInside(*it)) {
+			
+			m_tr->insert(*it);
+		
+		} else if (bl.isInside(*it)) {
+			
+			m_bl->insert(*it);
+			
+		} else if (br.isInside(*it)) {
+			
+			m_br->insert(*it);
+		}
+	}
+	
+	m_points.clear();
+}
+
+template<class V>
+bool QTree<V>::isInside(const Point &_p) const {
+	
+	return m_bound.isInside(_p);
+}
+
+template<class V>
+void QTree<V>::getAll(std::vector<std::pair<Point, V> > &_res) const {
+	
+	if (m_isleaf) {
+		
+		for (auto it : m_points)
+			_res.push_back(*it);
+	
+	} else {
+		
+		m_tl->getAll(_res);
+		m_tr->getAll(_res);
+		m_bl->getAll(_res);
+		m_br->getAll(_res);
+	}
+}
+
+template<class V>
+void QTree<V>::findInArea(const AABB &_bound, std::vector<std::pair<Point, V> > &_res) const {
+	
+}

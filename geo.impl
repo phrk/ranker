@@ -1,0 +1,9 @@
+
+GeoIndex::~GeoIndex() {
+	
+}
+
+template<class ObjId>
+void GeoIndex<ObjId>::addDoc(ObjId _id, Point _p) {
+	
+}

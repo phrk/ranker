@@ -4,6 +4,7 @@
 #include "hiconfig.h"
 #include "tokenizer.h"
 #include "index.h"
+#include "geo.h"
 #include <boost/shared_ptr.hpp>
 
 #include <boost/noncopyable.hpp>
@@ -43,3 +44,4 @@ public:
 }
 
 #endif
+

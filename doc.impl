@@ -20,12 +20,12 @@ Doc<CatT, ObjId>::~Doc() {
 }
 
 template <class CatT, class ObjId>
-bool Doc<CatT, ObjId>::inCategory(CatT _cat) {
+bool Doc<CatT, ObjId>::inCategory(CatT _cat) const {
 	return categories.find(_cat) != categories.end();
 }
 
 template <class CatT, class ObjId>
-RnkReal Doc<CatT, ObjId>::getTf(TokenIdT _token) {
+RnkReal Doc<CatT, ObjId>::getTf(TokenIdT _token) const {
 	
 	auto it = m_tfs.find(_token);
 	if (it == m_tfs.end())

@@ -39,14 +39,14 @@ void Occurs<ObjId>::add(Occur<ObjId> &_occur) {
 }
 
 template <class ObjId>
-void Occurs<ObjId>::getDocIds(std::vector<ObjId> &_docids) {
+void Occurs<ObjId>::getDocIds(std::vector<ObjId> &_docids) const {
 
 	for (int i = 0; i<m_occurs.size(); i++)
 		_docids.push_back( m_occurs[i].docid );
 }
 
 template <class ObjId>
-void Occurs<ObjId>::intersect(const Occurs<ObjId> &_a, const Occurs<ObjId> &_b, Occurs<ObjId> &_res) {
+void Occurs<ObjId>::intersect(const Occurs<ObjId> &_a, const Occurs<ObjId> &_b, Occurs<ObjId> &_res) const {
 	
 	int a_pos = 0;
 	int b_pos = 0;
