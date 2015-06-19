@@ -9,9 +9,12 @@
 
 #include <boost/noncopyable.hpp>
 
-#include <type_traits>
+//#include <type_traits>
 
 #include "ranker_defs.h"
+
+#include "doc_info.h"
+#include "query_info.h"
 
 namespace rnk2 {
 
@@ -32,6 +35,7 @@ public:
 	
 	ObjId addDoc(ObjId _id, const std::string &_title, const std::string &_text, const std::set<CatT> &_categories);
 	ObjId addDoc(ObjId _id, const std::string &_title, const std::string &_text);
+	void addDoc(const DocInfo<CatT, ObjId> &_docinfo);
 	
 	void removeDoc(ObjId _id);
 	

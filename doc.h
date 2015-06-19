@@ -10,6 +10,8 @@
 
 #include "ranker_defs.h"
 
+#include "point.h"
+
 namespace rnk2 {
 
 template <class CatT, class ObjId>
@@ -22,7 +24,9 @@ public:
 	
 	hashtable<TokenIdT, RnkReal> m_tfs;
 	
-	Doc(ObjId _id, const TextRepr &_title, const TextRepr &_text, const std::set<CatT> &_categories);
+	std::vector<Point> geo_points;
+	
+	Doc(ObjId _id, const TextRepr &_title, const TextRepr &_text, const std::set<CatT> &_categories, const std::vector<Point> &_geo_points);
 	virtual ~Doc();
 	
 	bool inCategory(CatT _cat) const;

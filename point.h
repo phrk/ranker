@@ -3,6 +3,8 @@
 
 #include "ranker_defs.h"
 
+#include <iostream>
+
 namespace rnk2 {
 
 class Point {
@@ -13,6 +15,8 @@ public:
 	Point();
 	Point(GeoCoord _x, GeoCoord _y);
 	virtual ~Point();
+	
+	void print() const;
 }; 
 
 }

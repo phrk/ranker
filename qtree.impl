@@ -40,12 +40,18 @@ void QTree<V>::insert(const std::pair<Point, V> &_p) {
 	} else if (m_br->isInside(_p.first)) {
 		
 		m_br->insert(_p);
+	} else {
+		
+		//_p.first.print();
+		std::cout << "QTree<V>::insert nowhere\n";
 	}
 	
 }
 
 template<class V>
 void QTree<V>::subdivide() {
+	
+	//std::cout << "QTree<V>::subdivide " << m_points.size() << std::endl;
 	
 	AABB tl;
 	AABB tr;
@@ -58,25 +64,34 @@ void QTree<V>::subdivide() {
 	m_bl.reset(new QTree(m_node_limit, bl));
 	m_br.reset(new QTree(m_node_limit, br));
 	
+/*	m_bound.print();
+	tl.print();
+	tr.print();
+	bl.print();
+	br.print();
+*/	
 	m_isleaf = false;
 	
 	for (auto it : m_points) {
 		
-		if (tl.isInside(*it)) {
+		if (tl.isInside(it.first)) {
 			
-			m_tl->insert(*it);
+			m_tl->insert(it);
 		
-		} else if (tr.isInside(*it)) {
+		} else if (tr.isInside(it.first)) {
 			
-			m_tr->insert(*it);
+			m_tr->insert(it);
 		
-		} else if (bl.isInside(*it)) {
+		} else if (bl.isInside(it.first)) {
 			
-			m_bl->insert(*it);
+			m_bl->insert(it);
 			
-		} else if (br.isInside(*it)) {
+		} else if (br.isInside(it.first)) {
 			
-			m_br->insert(*it);
+			m_br->insert(it);
+		} else {
+			
+			//std::cout << "void QTree<V>::subdivide not inserted anywhere\n";
 		}
 	}
 	
@@ -95,7 +110,7 @@ void QTree<V>::getAll(std::vector<std::pair<Point, V> > &_res) const {
 	if (m_isleaf) {
 		
 		for (auto it : m_points)
-			_res.push_back(*it);
+			_res.push_back(it);
 	
 	} else {
 		
@@ -107,6 +122,45 @@ void QTree<V>::getAll(std::vector<std::pair<Point, V> > &_res) const {
 }
 
 template<class V>
+void QTree<V>::brutePoints(const AABB &_bound, std::vector<std::pair<Point, V> > &_res) const {
+	
+	for (auto it : m_points)
+		if (_bound.isInside(it.first))
+			_res.push_back(it);
+}
+
+template<class V>
+bool QTree<V>::isIntersects(const AABB &_b) const {
+	
+	return m_bound.isIntersects(_b);
+}
+
+template<class V>
 void QTree<V>::findInArea(const AABB &_bound, std::vector<std::pair<Point, V> > &_res) const {
 	
+//	std::cout << "QTree<V>::findInArea(" << m_points.size() << ")..";
+	
+	if (_bound.isInside(m_bound)) {
+//		std::cout << "getting all\n";
+		getAll(_res);
+		return;
+	}
+	
+	if (m_isleaf) {
+		
+//		std::cout << "brutePoints " << m_points.size() << std::endl;
+		brutePoints(_bound, _res);
+		return;
+	} 
+	
+//	std::cout << "searching intersections\n";
+	
+	if (m_tl->isIntersects(_bound))
+		m_tl->findInArea(_bound, _res);
+	if (m_tr->isIntersects(_bound))
+		m_tr->findInArea(_bound, _res);
+	if (m_bl->isIntersects(_bound))
+		m_bl->findInArea(_bound, _res);
+	if (m_br->isIntersects(_bound))
+		m_br->findInArea(_bound, _res);
 }

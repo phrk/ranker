@@ -27,6 +27,8 @@ namespace rnk2 {
 		
 		void subdivide();
 		
+		void brutePoints(const AABB &_bound, std::vector<std::pair<Point, V> > &_res) const;
+		
 	public:
 		
 		QTree(int _node_limit, const AABB &_bound);
@@ -36,6 +38,7 @@ namespace rnk2 {
 		void getAll(std::vector<std::pair<Point, V> > &_res) const;
 		void findInArea(const AABB &_bound, std::vector<std::pair<Point, V> > &_res) const;
 		bool isInside(const Point &_p) const;
+		bool isIntersects(const AABB &_b) const;
 	};
 
 #include "qtree.impl"

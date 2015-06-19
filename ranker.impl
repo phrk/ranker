@@ -28,6 +28,18 @@ void Ranker<CatT, ObjId>::addDoc(const Doc<CatT, ObjId> &_doc) {
 }
 
 template <class CatT, class ObjId>
+void Ranker<CatT, ObjId>::addDoc(const DocInfo<CatT, ObjId> &_docinfo) {
+	
+	std::set<CatT> categories;
+	TextRepr title;
+	m_tokenizer.tokenizeText(_docinfo.title, title);
+	TextRepr text;
+	m_tokenizer.tokenizeText(_docinfo.text, text);
+	
+	addDoc(Doc<CatT, ObjId> (_docinfo.id, title, text, _docinfo.categories, _docinfo.geo_points));
+}
+
+template <class CatT, class ObjId>
 ObjId Ranker<CatT, ObjId>::addDoc(ObjId _id, const std::string &_title, const std::string &_text, const std::set<CatT> &_categories) {
 	
 	TextRepr title;
@@ -36,7 +48,7 @@ ObjId Ranker<CatT, ObjId>::addDoc(ObjId _id, const std::string &_title, const st
 	m_tokenizer.tokenizeText(_text, text);
 	
 	//ObjId id = m_index.getDocsCount();
-	addDoc(Doc<CatT, ObjId> (_id, title, text, _categories));
+	addDoc(Doc<CatT, ObjId> (_id, title, text, _categories, std::vector<Point>()));
 	return _id;
 }
 
@@ -49,7 +61,7 @@ ObjId Ranker<CatT, ObjId>::addDoc(ObjId _id, const std::string &_title, const st
 	TextRepr text;
 	m_tokenizer.tokenizeText(_text, text);
 	//ObjId id = m_index.getDocsCount();
-	addDoc(Doc<CatT, ObjId> (_id, title, text, categories));
+	addDoc(Doc<CatT, ObjId> (_id, title, text, categories, std::vector<Point>()));
 	return _id;
 }
 

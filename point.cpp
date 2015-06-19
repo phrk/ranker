@@ -16,4 +16,9 @@ Point::~Point() {
 	
 }
 
+void Point::print() const{
+	
+	std::cout << "Point " << x << " " << y << std::endl;
+}
+
 }
