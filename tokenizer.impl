@@ -1,17 +1,16 @@
 
-template<class TokenIdT>
-Tokenizer<TokenIdT>::Tokenizer(bool _by_pref):
-m_by_pref(_by_pref) {
+template<class TokenIdT, class ModeT>
+Tokenizer<TokenIdT, ModeT>::Tokenizer() {
 	
 }
 
-template<class TokenIdT>
-Tokenizer<TokenIdT>::~Tokenizer() {
+template<class TokenIdT, class ModeT>
+Tokenizer<TokenIdT, ModeT>::~Tokenizer() {
 	
 }
 
-template<class TokenIdT>
-TokenIdT Tokenizer<TokenIdT>::getTokenId(const std::string &_token) {
+template<class TokenIdT, class ModeT>
+TokenIdT Tokenizer<TokenIdT, ModeT>::getTokenId_(const std::string &_token) {
 	typename hashtable<std::string, TokenIdT>::iterator it = m_tokens.find(_token);
 	if (it != m_tokens.end())
 		return it->second;
@@ -22,8 +21,8 @@ TokenIdT Tokenizer<TokenIdT>::getTokenId(const std::string &_token) {
 	return newid;
 }
 
-template<class TokenIdT>
-TokenIdT Tokenizer<TokenIdT>::getTokenIdConst(const std::string &_token) const {
+template<class TokenIdT, class ModeT>
+TokenIdT Tokenizer<TokenIdT, ModeT>::getTokenIdConst_(const std::string &_token) const {
 	
 	typename hashtable<std::string, TokenIdT>::const_iterator it = m_tokens.find(_token);
 	if (it != m_tokens.end())
@@ -31,16 +30,41 @@ TokenIdT Tokenizer<TokenIdT>::getTokenIdConst(const std::string &_token) const {
 	return 0;
 }
 
-template<class TokenIdT>
-void Tokenizer<TokenIdT>::splitByDelims(const std::string &_text, std::vector<std::string> &_words) const  {
+template<class TokenIdT, class ModeT>
+void Tokenizer<TokenIdT, ModeT>::splitByDelims_(const std::string &_text, std::vector<std::string> &_words) const  {
 	
 	boost::split(_words, _text, boost::is_any_of("., ;:	-(){}\"\'<>\n"));
 }
 
-template<class TokenIdT>
-void Tokenizer<TokenIdT>::tokenizeText(const std::string &_text, TextRepr &_words) {
+template<class TokenIdT, class ModeT>
+void Tokenizer<TokenIdT, ModeT>::tokenizeText_(const std::string &_text, TextRepr &_words, Type2Type<ByPrefixes>) {
+	tokenizeTextPrefixes_(_text, _words);
+}
+
+template<class TokenIdT, class ModeT>
+void Tokenizer<TokenIdT, ModeT>::tokenizeText_(const std::string &_text, TextRepr &_words, Type2Type<ByWords>) {
 	
-	if (m_by_pref) {
+	std::string text (_text);
+	toLowerUtf8(text);
+	fix_utf8_string(text);
+	
+	
+	std::vector<std::string> words;
+	splitByDelims_(text, words);
+	
+	for (int i = 0; i<words.size(); i++)
+		if (words[i].size() != 0) {
+				_words.push_back(getTokenId_(words[i]));
+		}
+}
+
+template<class TokenIdT, class ModeT>
+void Tokenizer<TokenIdT, ModeT>::tokenizeText(const std::string &_text, TextRepr &_words) {
+	
+	
+	tokenizeText_(_text, _words, Type2Type<ModeT>());
+	
+/*	if (m_by_pref) {
 		tokenizeTextPrefixes(_text, _words);
 		return;
 	}
@@ -56,11 +80,11 @@ void Tokenizer<TokenIdT>::tokenizeText(const std::string &_text, TextRepr &_word
 	for (int i = 0; i<words.size(); i++)
 		if (words[i].size() != 0) {
 				_words.push_back(getTokenId(words[i]));
-		}
+		}*/
 }
 
-template<class TokenIdT>
-void Tokenizer<TokenIdT>::tokenizeTextConst(const std::string &_text, TextRepr &_words) const {
+template<class TokenIdT, class ModeT>
+void Tokenizer<TokenIdT, ModeT>::tokenizeTextConst(const std::string &_text, TextRepr &_words) const {
 	
 	
 	std::string text (_text);
@@ -68,26 +92,26 @@ void Tokenizer<TokenIdT>::tokenizeTextConst(const std::string &_text, TextRepr &
 	fix_utf8_string(text);
 	
 	std::vector<std::string> words;
-	splitByDelims(text, words);
+	splitByDelims_(text, words);
 	
 	for (int i = 0; i<words.size(); i++)
 		if (words[i].size() != 0) {
-			TokenIdT id = getTokenIdConst(words[i]);
+			TokenIdT id = getTokenIdConst_(words[i]);
 			if (id != 0)
 				_words.push_back(id);
 		}
 	
 }
 
-template<class TokenIdT>
-void Tokenizer<TokenIdT>::tokenizeTextPrefixes(const std::string &_str_query, TextRepr &_text) {
+template<class TokenIdT, class ModeT>
+void Tokenizer<TokenIdT, ModeT>::tokenizeTextPrefixes_(const std::string &_str_query, TextRepr &_text) {
 	
 	std::string text (_str_query);
 	toLowerUtf8(text);
 	fix_utf8_string(text);
 	
 	std::vector<std::string> words;
-	splitByDelims(text, words);
+	splitByDelims_(text, words);
 	
 	for (int i = 0; i<words.size(); i++)
 		if (words[i].size() != 0) {
@@ -96,7 +120,7 @@ void Tokenizer<TokenIdT>::tokenizeTextPrefixes(const std::string &_str_query, Te
 			getPrefixesUtf8(words[i], prefixes);
 			
 			for (int j = 0; j<prefixes.size(); j++)
-				_text.push_back(getTokenId(prefixes[j]));
+				_text.push_back(getTokenId_(prefixes[j]));
 		}
 }
 /*

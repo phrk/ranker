@@ -93,7 +93,7 @@ void InvertIndex<CatT, ObjId>::buildQuery(const TextRepr &_query_tokens, Query &
 
 template<class ObjId>
 bool cmpPairBySecond(const std::pair<ObjId, RnkReal> &_a, const std::pair<ObjId, RnkReal> &_b) {
-	return _a.second > _b.second;;
+	return _a.second > _b.second;
 }
 
 template <class CatT, class ObjId>
@@ -134,7 +134,7 @@ void InvertIndex<CatT, ObjId>::query(const TextRepr &_query_tokens, std::vector<
 		weights.push_back( std::make_pair( _result[i], calcBM25(it->second, query) ) );
 	}
 	
-	std::sort(weights.begin(), weights.end(), cmpPairBySecond);
+	std::sort(weights.begin(), weights.end(), cmpPairBySecond<ObjId>);
 		
 	_result.clear();
 	for (int i = 0; i<weights.size(); i++)

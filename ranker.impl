@@ -6,8 +6,8 @@
 //}
 
 template <class CatT, class ObjId>
-Ranker<CatT, ObjId>::Ranker(bool _by_pref):
-m_tokenizer(_by_pref) {
+Ranker<CatT, ObjId>::Ranker(TokenizerIfsPtr _tokenizer):
+m_tokenizer(_tokenizer) {
 	
 }
 
@@ -32,9 +32,9 @@ void Ranker<CatT, ObjId>::addDoc(const DocInfo<CatT, ObjId> &_docinfo) {
 	
 	std::set<CatT> categories;
 	TextRepr title;
-	m_tokenizer.tokenizeText(_docinfo.title, title);
+	m_tokenizer->tokenizeText(_docinfo.title, title);
 	TextRepr text;
-	m_tokenizer.tokenizeText(_docinfo.text, text);
+	m_tokenizer->tokenizeText(_docinfo.text, text);
 	
 	addDoc(Doc<CatT, ObjId> (_docinfo.id, title, text, _docinfo.categories, _docinfo.geo_points));
 }
@@ -43,9 +43,9 @@ template <class CatT, class ObjId>
 ObjId Ranker<CatT, ObjId>::addDoc(ObjId _id, const std::string &_title, const std::string &_text, const std::set<CatT> &_categories) {
 	
 	TextRepr title;
-	m_tokenizer.tokenizeText(_title, title);
+	m_tokenizer->tokenizeText(_title, title);
 	TextRepr text;
-	m_tokenizer.tokenizeText(_text, text);
+	m_tokenizer->tokenizeText(_text, text);
 	
 	//ObjId id = m_index.getDocsCount();
 	addDoc(Doc<CatT, ObjId> (_id, title, text, _categories, std::vector<Point>()));
@@ -57,9 +57,9 @@ ObjId Ranker<CatT, ObjId>::addDoc(ObjId _id, const std::string &_title, const st
 	
 	std::set<CatT> categories;
 	TextRepr title;
-	m_tokenizer.tokenizeText(_title, title);
+	m_tokenizer->tokenizeText(_title, title);
 	TextRepr text;
-	m_tokenizer.tokenizeText(_text, text);
+	m_tokenizer->tokenizeText(_text, text);
 	//ObjId id = m_index.getDocsCount();
 	addDoc(Doc<CatT, ObjId> (_id, title, text, categories, std::vector<Point>()));
 	return _id;
@@ -76,7 +76,7 @@ template <class CatT, class ObjId>
 void Ranker<CatT, ObjId>::query(const std::string &_query, //uint64_t _cat, 
 						std::vector<ObjId> &_result) const {
 	TextRepr query;
-	m_tokenizer.tokenizeTextConst(_query, query);
+	m_tokenizer->tokenizeTextConst(_query, query);
 	if (query.size() != 0)
 		m_index.query(query, _result);
 }
@@ -86,7 +86,7 @@ void Ranker<CatT, ObjId>::query(const std::string &_query, CatT _cat,
 									std::vector<ObjId> &_result) const {
 	
 	TextRepr query;
-	m_tokenizer.tokenizeTextConst(_query, query);
+	m_tokenizer->tokenizeTextConst(_query, query);
 	if (query.size() != 0)
 		m_index.query(query, _cat, _result);
 }

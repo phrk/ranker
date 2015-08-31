@@ -19,7 +19,7 @@ void DocInfo<CatT, ObjId>::addCategory(CatT _cat) {
 }
 
 template <class CatT, class ObjId>
-void DocInfo<CatT, ObjId>::addGeoPoint(const Point &_point) {
+void DocInfo<CatT, ObjId>::setGeo(const Point &_point) {
 	
-	geo_points.push_back(_point);
+	geo = _point;
 }

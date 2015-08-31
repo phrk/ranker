@@ -12,13 +12,13 @@ public:
 	std::string title;
 	std::string text;
 	std::set<CatT> categories;
-	std::vector<Point> geo_points;
+	Point geo;
 	
 	DocInfo(ObjId id, const std::string &_title, const std::string &_text);
 	virtual ~DocInfo();
 	
 	void addCategory(CatT _cat);
-	void addGeoPoint(const Point &_point);
+	void setGeo(const Point &_point);
 };
 
 #include "doc_info.impl"

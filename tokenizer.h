@@ -12,25 +12,55 @@
 
 namespace rnk2 {
 
-template<class TokenIdT>
-class Tokenizer {
-	hashtable<std::string, TokenIdT> m_tokens;
-	void textToIds(const std::string &_text, std::vector<TokenIdT> &_words);
-	
-	void splitByDelims(const std::string &_text, std::vector<std::string> &_words) const;
-	
-	bool m_by_pref;
+template<int v>
+struct Int2Type {
+	enum { value = v };
+};
+
+template <class T>
+struct Type2Type {
+	typedef T OriginalType;
+};
+
+struct ByPrefixes {
+};
+
+struct ByWords {
+};
+
+//template<class TokenIdT>
+class TokenizerIfs {
 public:
 	
-	Tokenizer(bool _by_pref);
-	
-	TokenIdT getTokenId(const std::string &_token);
-	TokenIdT getTokenIdConst(const std::string &_token) const;
+	virtual ~TokenizerIfs() { }
+	virtual void tokenizeText(const std::string &_str_query, TextRepr &_text) = 0;
+	virtual void tokenizeTextConst(const std::string &_str_query, TextRepr &_text) const = 0;
+};
 
-	void tokenizeText(const std::string &_str_query, TextRepr &_text);
-	void tokenizeTextConst(const std::string &_str_query, TextRepr &_text) const;
+typedef boost::shared_ptr<TokenizerIfs> TokenizerIfsPtr;
+
+template<class TokenIdT, class ModeT = ByWords>
+class Tokenizer : public TokenizerIfs {
 	
-	void tokenizeTextPrefixes(const std::string &_str_query, TextRepr &_text);
+	hashtable<std::string, TokenIdT> m_tokens;
+	void textToIds_(const std::string &_text, std::vector<TokenIdT> &_words);
+	
+	void splitByDelims_(const std::string &_text, std::vector<std::string> &_words) const;
+		
+	void tokenizeText_(const std::string &_text, TextRepr &_words, Type2Type<ByPrefixes>);
+	void tokenizeText_(const std::string &_text, TextRepr &_words, Type2Type<ByWords>);
+	
+	TokenIdT getTokenId_(const std::string &_token);
+	TokenIdT getTokenIdConst_(const std::string &_token) const;
+	
+	void tokenizeTextPrefixes_(const std::string &_str_query, TextRepr &_text);
+	
+public:
+	
+	Tokenizer();
+	
+	virtual void tokenizeText(const std::string &_str_query, TextRepr &_text);
+	virtual void tokenizeTextConst(const std::string &_str_query, TextRepr &_text) const;
 	
 	virtual ~Tokenizer();
 };

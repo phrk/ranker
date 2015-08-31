@@ -10,7 +10,7 @@
 
 #include "ranker_defs.h"
 
-#include "point.h"
+#include "geo/point.h"
 
 namespace rnk2 {
 

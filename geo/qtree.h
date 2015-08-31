@@ -1,10 +1,10 @@
 #ifndef _RANKER_QTREE_H_
 #define _RANKER_QTREE_H_
 
-#include "ranker_defs.h"
+#include "../ranker_defs.h"
 #include "aabb.h"
-#include <boost/shared_ptr.hpp>
 
+#include <boost/shared_ptr.hpp>
 
 namespace rnk2 {
 	

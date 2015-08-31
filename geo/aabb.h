@@ -1,7 +1,7 @@
 #ifndef _RANKER_AABB_H_
 #define _RANKER_AABB_H_
 
-#include "ranker_defs.h"
+#include "../ranker_defs.h"
 #include "point.h"
 
 #include <iostream>

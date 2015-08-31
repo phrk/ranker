@@ -4,7 +4,7 @@
 #include "hiconfig.h"
 #include "tokenizer.h"
 #include "index.h"
-#include "geo.h"
+#include "geo/geo.h"
 #include <boost/shared_ptr.hpp>
 
 #include <boost/noncopyable.hpp>
@@ -22,7 +22,7 @@ template <class CatT, class ObjId>
 class Ranker : public boost::noncopyable {
 	
 	InvertIndex<CatT, ObjId> m_index;
-	Tokenizer<TokenIdT> m_tokenizer;
+	TokenizerIfsPtr m_tokenizer;
 
 protected:
 	
@@ -30,7 +30,7 @@ protected:
 
 public:
 	
-	Ranker(bool _by_pref);
+	Ranker(TokenizerIfsPtr _tokenizer);
 	virtual ~Ranker();
 	
 	ObjId addDoc(ObjId _id, const std::string &_title, const std::string &_text, const std::set<CatT> &_categories);

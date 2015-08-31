@@ -1,0 +1,27 @@
+import sys
+sys.path.insert(0, '../../hiaux/hibuilder/')
+
+from hibuilder import HiBuilder
+
+env = Environment()
+
+b = HiBuilder("ranker_tests", "clang++")
+
+hicore_path = "../../"
+hiaux_path = "../../"
+
+b.addPath(hicore_path)
+b.addPath(hiaux_path)
+
+b.addPath("./")
+b.connectLib("../")
+
+b.addCppGlob("*.cpp")
+b.addCppGlob("*.pb.cc")
+
+#b.connectLib(hiaux_path + "hiaux/strings/")
+
+b.addCCFlags(["-I/usr/include/", "-I/usr/local/include/"]) #"-std=c++11"
+b.addLinkFlags(["-L/usr/local/lib/"])
+
+b.build(Program)
